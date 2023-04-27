@@ -12,7 +12,6 @@ use Carbon\Carbon;
 class UserDTO extends BaseDTO
 {
     public function __construct(
-
         public string  $fio,
         public string  $login,
         public int     $type,
@@ -31,13 +30,13 @@ class UserDTO extends BaseDTO
     public static function fromModel($model): static
     {
         return new static(
-            $model->id,
-            $model->fio,
-            $model->name,
-            $model->type,
-            true,
-            $model->created_at,
-            null
+            fio: $model->fio,
+            login: $model->name,
+            type: $model->type,
+            isOnline: true,
+            createdAt: $model->created_at,
+            password: null,
+            id: $model->id
         );
     }
 }

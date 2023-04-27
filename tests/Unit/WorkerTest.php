@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Const\UserType;
-use App\Const\WorkerType;
+use App\Const\WorkerTypeEnum;
 use App\DTO\UserDTO;
 use App\DTO\WorkerDTO;
 use App\Services\WorkerService;
@@ -30,7 +30,7 @@ class WorkerTest extends TestCase
             ),
             new WorkerDTO(
                 '+79012345678',
-                WorkerType::COMPILER
+                WorkerTypeEnum::COMPILER
             )
         );
         $this->assertTrue(WorkerService::getAllWorkers()->count() === 1);

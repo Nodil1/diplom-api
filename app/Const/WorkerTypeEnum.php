@@ -2,7 +2,7 @@
 
 namespace App\Const;
 
-class WorkerType
+class WorkerTypeEnum
 {
     const COMPILER = 1;
     const COURIER = 2;

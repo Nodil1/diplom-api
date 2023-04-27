@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Const\TaskStateEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Ramsey\Collection\Collection;
 
 /**
  * App\Models\Task
@@ -16,9 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $task_type
  * @property float $latitude
  * @property float $longitude
- * @property int $state
  * @property string $expired_at
- * @property string|null $finished_at
  * @property int|null $id_worker
  * @property int|null $id_parent_task
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -47,4 +47,33 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function types(): \Illuminate\Database\Eloquent\Collection
+    {
+        return TaskType::where("id_task", $this->id)->get();
+    }
+
+    public function state(): TaskState
+    {
+        return TaskState::where("id_task", $this->id)->get()->last();
+    }
+
+    public function worker(): ?Worker
+    {
+        return Worker::find($this->id_worker);
+    }
+
+    public function finishState(): ?TaskState
+    {
+        return TaskState::where("id_task", $this->id)
+            ->where('state', TaskStateEnum::FINISHED)
+            ->first();
+    }
+    public function parentTask(): ?Task
+    {
+        return Task::find($this->id_parent_task);
+    }
 }

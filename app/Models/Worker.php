@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $phone_number
- * @property int $type
  * @property int|null $id_car
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -29,4 +29,11 @@ use Illuminate\Database\Eloquent\Model;
 class Worker extends Model
 {
     use HasFactory;
+
+    /**
+     * @return Collection<WorkerType
+     */
+    public function types(): Collection{
+        return WorkerType::where('id_worker', $this->id)->get();
+    }
 }

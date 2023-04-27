@@ -2,24 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Const\UserType;
+use App\Const\WorkerTypeEnum;
 use App\DTO\WorkerDTO;
+use App\Models\User;
 use App\Models\Worker;
 use App\Http\Requests\StoreWorkerRequest;
 use App\Http\Requests\UpdateWorkerRequest;
+use App\Services\UserService;
 use App\Services\WorkerService;
+use Throwable;
 
 class WorkerController extends Controller
 {
 
     public function index()
     {
-        return request()->json(WorkerService::getAllWorkers());
+        return response()->json(WorkerService::getAllWorkers());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function store(StoreWorkerRequest $request)
     {
-        WorkerService::createWorker(WorkerDTO::fromRequest($request));
-        return request()->json();
+        $worker = WorkerDTO::fromJson($request->getContent());
+        print_r($worker);
+        $worker->userModel = UserService::createUser($worker->userModel, UserType::WORKER);
+        WorkerService::createWorker($worker);
+        return response()->json();
     }
 
     public function show(Worker $worker)
