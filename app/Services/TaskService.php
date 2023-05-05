@@ -17,21 +17,25 @@ final class TaskService
 
     public static function createTask(TaskDTO $task): void
     {
-        $taskModel = new Task([
-            'name' => $task->name,
-            'description' => $task->description,
-            'address' => $task->address,
-            'customer' => $task->customer,
-            'latitude' => $task->latitude,
-            'longitude' => $task->longitude,
-            'created_at' => $task->createdAt,
-            'expire_at' => $task->expireAt,
-            'updated_at' => $task->updatedAt,
-        ]);
+        $taskModel = new Task();
+        $taskModel->name = $task->name;
+        $taskModel->description = $task->description;
+        $taskModel->address = $task->address;
+        $taskModel->customer = $task->customer;
+        $taskModel->latitude = $task->latitude;
+        $taskModel->longitude = $task->longitude;
+        $taskModel->expired_at = $task->expireAt;
+
         $taskModel->save();
-        foreach ($task->type as $type) {
-            (new TaskType(['id_task' => $taskModel->id, 'type' => $type]))->save();
+        foreach ($task->taskType as $type) {
+            $taskType = new TaskType();
+            $taskType->id_task = $taskModel->id;
+            $taskType->type = $type;
+            $taskType->save();
         }
-        (new TaskState(['id_task' => $taskModel->id, 'state' => TaskStateEnum::WAITING]))->save();
+        $taskState = new TaskState();
+        $taskState->id_task = $taskModel->id;
+        $taskState->state = TaskStateEnum::WAITING;
+        $taskState->save();
     }
 }
