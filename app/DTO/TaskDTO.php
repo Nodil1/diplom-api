@@ -21,11 +21,11 @@ class TaskDTO extends BaseDTO
      * @param float $latitude
      * @param float $longitude
      * @param int $state
-     * @param Carbon $createdAt
-     * @param Carbon $expireAt
-     * @param Carbon $updatedAt
+     * @param string $expireAt
+     * @param string|null $createdAt
+     * @param string|null $updatedAt
      * @param WorkerDTO|null $worker
-     * @param Carbon|null $finishedAt
+     * @param string|null $finishedAt
      * @param TaskDTO|null $parentTask
      */
     public function __construct(
@@ -42,7 +42,8 @@ class TaskDTO extends BaseDTO
         public ?string    $updatedAt = null,
         public ?WorkerDTO $worker = null,
         public ?string    $finishedAt = null,
-        public ?TaskDTO   $parentTask = null
+        public ?TaskDTO   $parentTask = null,
+        public ?int $id = null
     )
     {
         $expireAt = Carbon::parse($expireAt);
@@ -55,6 +56,7 @@ class TaskDTO extends BaseDTO
     static public function fromModel($model): static
     {
         return new static(
+
             $model->name,
             $model->description,
             $model->address,
@@ -67,8 +69,10 @@ class TaskDTO extends BaseDTO
             $model->expired_at,
             $model->updated_at,
             $model->worker(),
-            $model->finishState()->created_at,
-            $model->parentTask()
+            $model->finishState() !== null ? $model->finishState()->created_at : null,
+            $model->parentTask(),
+            $model->id
+
         );
     }
     public static function fromJson($json): static|\stdClass
