@@ -14,9 +14,6 @@ class WorkerDTO extends BaseDTO
 {
     public function __construct(
         public string   $phoneNumber,
-        /**
-         * @var array<int>
-         */
         public array      $type,
         public ?UserDTO $userModel = null,
         public ?CarDTO  $carModel = null,
@@ -34,12 +31,14 @@ class WorkerDTO extends BaseDTO
      */
     public static function fromModel($model): static
     {
+        $user = UserDTO::fromModel(User::find($model->id));
         return new static(
             $model->phone_number,
             $model->types()->map(function (WorkerType $type) {
                 return $type->type;
             })->toArray(),
-            userModel: UserDTO::fromModel(User::find($model->id)),
+            userModel: $user,
+            id: $user->id
 
         );
     }

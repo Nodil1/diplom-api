@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use _PHPStan_532094bc1\RingCentral\Psr7\Request;
 use App\DTO\TaskDTO;
 use App\Models\Task;
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
 use App\Services\TaskService;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -18,19 +16,25 @@ class TaskController extends Controller
     }
 
 
-    public function store(\Illuminate\Http\Request $request)
+    public function store(Request $request)
     {
         TaskService::createTask(TaskDTO::fromJson($request->getContent()));
     }
 
+    public function workerTasks(Request $request)
+    {
+
+        return response()->json(TaskService::getTasksWhereWorkerId($request->user()->id));
+    }
     public function show(Task $task)
     {
-        //
+        return response()->json(TaskDTO::fromModel($task));
     }
 
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(Request $request, Task $task)
     {
-        //
+        $request->getData()->merge(['id' => $task->id]);
+        TaskService::updateTask(TaskDTO::fromJson($request->getContent()), $task);
     }
 
     public function destroy(Task $task)

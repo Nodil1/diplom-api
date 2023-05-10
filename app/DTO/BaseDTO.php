@@ -38,9 +38,10 @@ abstract class BaseDTO
 
     public static function fromJson($json): static | \stdClass
     {
-        $serializer = new JsonSerializer();
-
-        return $serializer->deserialize(static::class, JsonObject::fromJsonString($json));
+        $serializer = new \Symfony\Component\Serializer\Serializer([new \Symfony\Component\Serializer\Normalizer\ObjectNormalizer()], [new \Symfony\Component\Serializer\Encoder\JsonEncoder()]);
+        $array = $serializer->decode($json, 'json');
+        return $serializer->deserialize(json_encode($array), static::class, 'json');
     }
+
 
 }

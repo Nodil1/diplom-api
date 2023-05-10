@@ -15,8 +15,8 @@ class UserDTO extends BaseDTO
         public string  $fio,
         public string  $login,
         public int     $type,
-        public ?bool    $isOnline = null,
-        public ?Carbon $createdAt = null,
+        public ?bool   $isOnline = null,
+        public ?string $createdAt = null,
         public ?string $password = null,
         public ?int    $id = null,
     )

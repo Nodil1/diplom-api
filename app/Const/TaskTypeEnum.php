@@ -4,7 +4,7 @@ namespace App\Const;
 
 class TaskTypeEnum
 {
-    const COMPILE = 1;
-    const DELIVERY = 2;
-    const MEASURE = 3;
+    const COMPILE = 0;
+    const DELIVERY = 1;
+    const MEASURE = 2;
 }

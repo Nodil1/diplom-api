@@ -4,7 +4,7 @@ namespace App\Const;
 
 class UserType
 {
-    const ADMIN = 1;
-    const WORKER = 2;
-    const MANAGER = 3;
+    const ADMIN = 0;
+    const WORKER = 1;
+    const MANAGER = 2;
 }

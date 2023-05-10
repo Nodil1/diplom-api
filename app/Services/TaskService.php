@@ -7,17 +7,12 @@ use App\DTO\TaskDTO;
 use App\Models\Task;
 use App\Models\TaskState;
 use App\Models\TaskType;
+use Illuminate\Support\Collection;
 
 final class TaskService
 {
-    public static function getTasks(): \Illuminate\Support\Collection
+    private static function fillModel(Task $taskModel, TaskDTO $task): void
     {
-        return TaskDTO::convertCollection(Task::all());
-    }
-
-    public static function createTask(TaskDTO $task): void
-    {
-        $taskModel = new Task();
         $taskModel->name = $task->name;
         $taskModel->description = $task->description;
         $taskModel->address = $task->address;
@@ -25,8 +20,9 @@ final class TaskService
         $taskModel->latitude = $task->latitude;
         $taskModel->longitude = $task->longitude;
         $taskModel->expired_at = $task->expireAt;
-
+        $taskModel->id_worker = $task->worker?->id;
         $taskModel->save();
+        TaskType::where("id_task", $taskModel->id)->delete();
         foreach ($task->taskType as $type) {
             $taskType = new TaskType();
             $taskType->id_task = $taskModel->id;
@@ -35,7 +31,31 @@ final class TaskService
         }
         $taskState = new TaskState();
         $taskState->id_task = $taskModel->id;
-        $taskState->state = TaskStateEnum::WAITING;
+        $taskState->state = $task->state;
         $taskState->save();
+    }
+
+    public static function getTasks(): \Illuminate\Support\Collection
+    {
+        return TaskDTO::convertCollection(Task::all());
+    }
+
+    /**
+     * @param int $id
+     * @return Collection<TaskDTO>
+     */
+    public static function getTasksWhereWorkerId(int $id): Collection
+    {
+        return TaskDTO::convertCollection(Task::where('id_worker', $id)->get());
+    }
+
+    public static function createTask(TaskDTO $task): void
+    {
+        TaskService::fillModel(new Task(), $task);
+    }
+
+    public static function updateTask(TaskDTO $task, Task $taskModel): void
+    {
+        TaskService::fillModel($taskModel, $task);
     }
 }
