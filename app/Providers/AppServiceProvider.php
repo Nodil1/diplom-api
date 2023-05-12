@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\TestSingle;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(TestSingle::class, function () {
+            return new TestSingle();
+        });
     }
 
     /**

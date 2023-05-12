@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\TestSingle;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (Request $request) {
+    $single = App::make(TestSingle::class);
+    $single->incrementServer();
     return view('welcome');
+});
+Route::get('/test', function (Request $request) {
+    $taskDTO = \App\DTO\TaskDTO::fromModel(\App\Models\Task::where("id_worker",1)->first());
+    \App\Events\TaskAssignToWorkerEvent::dispatch($taskDTO);
+    return response()->json($taskDTO);
 });

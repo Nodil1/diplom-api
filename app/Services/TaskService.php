@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Const\TaskStateEnum;
 use App\DTO\TaskDTO;
+use App\Events\TaskAssignToWorkerEvent;
 use App\Models\Task;
 use App\Models\TaskState;
 use App\Models\TaskType;
@@ -56,6 +57,10 @@ final class TaskService
 
     public static function updateTask(TaskDTO $task, Task $taskModel): void
     {
+        if ($task->worker && $taskModel->id_worker === null) {
+            TaskAssignToWorkerEvent::dispatch($task);
+            echo "Prikol";
+        }
         TaskService::fillModel($taskModel, $task);
     }
 }

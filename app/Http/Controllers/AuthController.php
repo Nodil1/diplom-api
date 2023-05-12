@@ -19,7 +19,10 @@ class AuthController extends Controller
         $user = User::where("name", $request->input("login"))->first();
         if (Hash::check($request->input("password"), $user->password)) {
             Auth::login($user, true);
-            return response()->json(["token" => Auth::user()->createToken("token")->plainTextToken]);
+            return response()->json([
+                "token" => Auth::user()->createToken("token", )->plainTextToken,
+                "id" => Auth::user()->id
+            ]);
         }
         return response()->json(["message" => "Неверный логин или пароль"]);
 

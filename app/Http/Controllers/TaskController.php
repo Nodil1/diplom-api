@@ -33,7 +33,6 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $request->getData()->merge(['id' => $task->id]);
         TaskService::updateTask(TaskDTO::fromJson($request->getContent()), $task);
     }
 
